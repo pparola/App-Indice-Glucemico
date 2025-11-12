@@ -13,9 +13,14 @@ builder.Services.AddRazorPages();
 // Registrar repositorios
 builder.Services.AddScoped<IAlimentoRepository, AlimentoRepository>();
 builder.Services.AddScoped<IRegistroRepository, RegistroRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 // Registrar servicio de inicialización de base de datos
 builder.Services.AddSingleton<DatabaseInitializer>();
+
+// Registrar servicio de email
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

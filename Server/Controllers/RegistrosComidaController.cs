@@ -12,15 +12,18 @@ public class RegistrosComidaController : ControllerBase
 {
     private readonly IRegistroRepository _registroRepository;
     private readonly IAlimentoRepository _alimentoRepository;
+    private readonly IUsuarioRepository _usuarioRepository;
     private readonly ILogger<RegistrosComidaController> _logger;
 
     public RegistrosComidaController(
         IRegistroRepository registroRepository,
         IAlimentoRepository alimentoRepository,
+        IUsuarioRepository usuarioRepository,
         ILogger<RegistrosComidaController> logger)
     {
         _registroRepository = registroRepository;
         _alimentoRepository = alimentoRepository;
+        _usuarioRepository = usuarioRepository;
         _logger = logger;
     }
 
@@ -40,6 +43,33 @@ public class RegistrosComidaController : ControllerBase
         {
             _logger.LogError(ex, "Error al obtener los registros de hoy");
             return StatusCode(500, "Error interno del servidor al obtener los registros de hoy");
+        }
+    }
+
+    /// <summary>
+    /// Obtiene todos los registros del día actual para un usuario específico
+    /// </summary>
+    /// <param name="usuarioId">ID del usuario</param>
+    /// <returns>Lista de registros del día actual del usuario</returns>
+    [HttpGet("hoy/{usuarioId}")]
+    public async Task<ActionResult<IEnumerable<RegistroComida>>> GetTodayByUsuario(int usuarioId)
+    {
+        try
+        {
+            // Verificar que el usuario existe
+            var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                return NotFound($"No se encontró el usuario con ID {usuarioId}");
+            }
+
+            var registros = await _registroRepository.GetTodayAsync(usuarioId);
+            return Ok(registros);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener los registros de hoy para el usuario {UsuarioId}", usuarioId);
+            return StatusCode(500, "Error interno del servidor al obtener los registros");
         }
     }
 
@@ -95,6 +125,39 @@ public class RegistrosComidaController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene todos los registros de una fecha específica para un usuario
+    /// </summary>
+    /// <param name="usuarioId">ID del usuario</param>
+    /// <param name="fecha">Fecha en formato YYYY-MM-DD</param>
+    /// <returns>Lista de registros de la fecha especificada del usuario</returns>
+    [HttpGet("usuario/{usuarioId}/fecha/{fecha}")]
+    public async Task<ActionResult<IEnumerable<RegistroComida>>> GetByDateAndUsuario(int usuarioId, string fecha)
+    {
+        try
+        {
+            // Verificar que el usuario existe
+            var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                return NotFound($"No se encontró el usuario con ID {usuarioId}");
+            }
+
+            if (!DateTime.TryParse(fecha, out var fechaParseada))
+            {
+                return BadRequest("Formato de fecha inválido. Use el formato YYYY-MM-DD");
+            }
+
+            var registros = await _registroRepository.GetByDateAsync(usuarioId, fechaParseada);
+            return Ok(registros);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener los registros de la fecha {Fecha} para el usuario {UsuarioId}", fecha, usuarioId);
+            return StatusCode(500, "Error interno del servidor al obtener los registros");
+        }
+    }
+
+    /// <summary>
     /// Obtiene todos los registros en un rango de fechas
     /// </summary>
     /// <param name="fechaInicio">Fecha de inicio en formato YYYY-MM-DD</param>
@@ -133,6 +196,53 @@ public class RegistrosComidaController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene todos los registros en un rango de fechas para un usuario específico
+    /// </summary>
+    /// <param name="usuarioId">ID del usuario</param>
+    /// <param name="fechaInicio">Fecha de inicio en formato YYYY-MM-DD</param>
+    /// <param name="fechaFin">Fecha de fin en formato YYYY-MM-DD</param>
+    /// <returns>Lista de registros en el rango de fechas del usuario</returns>
+    [HttpGet("usuario/{usuarioId}/rango")]
+    public async Task<ActionResult<IEnumerable<RegistroComida>>> GetByDateRangeAndUsuario(
+        int usuarioId,
+        [FromQuery] string fechaInicio,
+        [FromQuery] string fechaFin)
+    {
+        try
+        {
+            // Verificar que el usuario existe
+            var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                return NotFound($"No se encontró el usuario con ID {usuarioId}");
+            }
+
+            if (!DateTime.TryParse(fechaInicio, out var fechaInicioParseada))
+            {
+                return BadRequest("Formato de fecha de inicio inválido. Use el formato YYYY-MM-DD");
+            }
+
+            if (!DateTime.TryParse(fechaFin, out var fechaFinParseada))
+            {
+                return BadRequest("Formato de fecha de fin inválido. Use el formato YYYY-MM-DD");
+            }
+
+            if (fechaInicioParseada > fechaFinParseada)
+            {
+                return BadRequest("La fecha de inicio debe ser anterior o igual a la fecha de fin");
+            }
+
+            var registros = await _registroRepository.GetByDateRangeAsync(usuarioId, fechaInicioParseada, fechaFinParseada);
+            return Ok(registros);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener los registros en el rango {FechaInicio} - {FechaFin} para el usuario {UsuarioId}", fechaInicio, fechaFin, usuarioId);
+            return StatusCode(500, "Error interno del servidor al obtener los registros");
+        }
+    }
+
+    /// <summary>
     /// Crea un nuevo registro de comida
     /// </summary>
     /// <param name="registro">Datos del registro a crear</param>
@@ -145,6 +255,13 @@ public class RegistrosComidaController : ControllerBase
             if (registro == null)
             {
                 return BadRequest("El registro no puede ser nulo");
+            }
+
+            // Validar que el usuario existe
+            var usuario = await _usuarioRepository.GetByIdAsync(registro.UsuarioId);
+            if (usuario == null)
+            {
+                return BadRequest($"No se encontró el usuario con ID {registro.UsuarioId}");
             }
 
             // Validar que el alimento existe

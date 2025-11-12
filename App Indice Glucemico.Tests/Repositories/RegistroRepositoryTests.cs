@@ -28,10 +28,12 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Manzana", 38, 14.5m);
         
         var nuevoRegistro = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = DateTime.Now,
             GramosConsumidos = 150.0m,
@@ -60,10 +62,12 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Banana", 51, 23.0m);
         
         var registro = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = DateTime.Now,
             GramosConsumidos = 100.0m,
@@ -106,6 +110,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Manzana", 38, 14.5m);
         
         var fechaHoy = DateTime.Today;
@@ -113,6 +118,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         
         var registroHoy1 = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = fechaHoy.AddHours(8), // 8 AM
             GramosConsumidos = 150.0m,
@@ -122,6 +128,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         
         var registroHoy2 = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = fechaHoy.AddHours(13), // 1 PM
             GramosConsumidos = 200.0m,
@@ -131,6 +138,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         
         var registroAyer = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = fechaAyer.AddHours(12),
             GramosConsumidos = 100.0m,
@@ -156,10 +164,12 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Banana", 51, 23.0m);
         
         var registro = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = DateTime.Now,
             GramosConsumidos = 120.0m,
@@ -183,6 +193,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Arroz", 73, 28.0m);
         
         var fechaInicio = DateTime.Today.AddDays(-5);
@@ -192,6 +203,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         // Registro dentro del rango
         var registro1 = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = fechaInicio.AddDays(2),
             GramosConsumidos = 100.0m,
@@ -202,6 +214,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         // Registro dentro del rango
         var registro2 = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = fechaFin,
             GramosConsumidos = 150.0m,
@@ -212,6 +225,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         // Registro fuera del rango
         var registro3 = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = fechaFuera,
             GramosConsumidos = 80.0m,
@@ -238,10 +252,12 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Manzana", 38, 14.5m);
         
         var registro = new RegistroComida
         {
+            UsuarioId = usuario.Id,
             AlimentoId = alimento.Id,
             FechaHora = DateTime.Now,
             GramosConsumidos = 150.0m,
@@ -299,6 +315,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await DatabaseHelper.CleanDatabaseAsync();
+        var usuario = await DatabaseHelper.CreateTestUsuarioAsync("Test Usuario", "test@test.com");
         var alimento = await DatabaseHelper.CreateTestAlimentoAsync("Alimento Test", 50, 20.0m);
         
         var tiposComida = new[] 
@@ -314,6 +331,7 @@ public class RegistroRepositoryTests : IClassFixture<DatabaseFixture>
         {
             var registro = new RegistroComida
             {
+                UsuarioId = usuario.Id,
                 AlimentoId = alimento.Id,
                 FechaHora = DateTime.Now,
                 GramosConsumidos = 100.0m,

@@ -1,3 +1,4 @@
+using Dapper;
 using MySqlConnector;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -67,10 +68,55 @@ public class DatabaseInitializer
                 await connection.ExecuteNonQueryAsync(createAlimentosTable);
                 _logger.LogInformation("Tabla 'Alimentos' verificada/creada correctamente");
 
-                // Crear tabla RegistroComidas
+                // Crear tabla Usuarios
+                var createUsuariosTable = @"
+                    CREATE TABLE IF NOT EXISTS `Usuarios` (
+                        `Id` INT NOT NULL AUTO_INCREMENT,
+                        `Nombre` VARCHAR(255) NOT NULL,
+                        `Email` VARCHAR(255) NOT NULL,
+                        `Password` VARCHAR(255) NOT NULL,
+                        `FechaCreacion` DATETIME NOT NULL,
+                        `Activo` BIT NOT NULL DEFAULT 1,
+                        PRIMARY KEY (`Id`),
+                        UNIQUE KEY `uk_email` (`Email`),
+                        INDEX `idx_email` (`Email`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
+
+                await connection.ExecuteNonQueryAsync(createUsuariosTable);
+                _logger.LogInformation("Tabla 'Usuarios' verificada/creada correctamente");
+
+                // Verificar si la columna UsuarioId existe en RegistroComidas
+                var checkUsuarioIdColumn = @"
+                    SELECT COUNT(*) 
+                    FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = 'RegistroComidas' 
+                    AND COLUMN_NAME = 'UsuarioId';";
+
+                var usuarioIdExists = await connection.ExecuteScalarAsync<int>(checkUsuarioIdColumn);
+
+                // Si la columna no existe, agregarla
+                if (usuarioIdExists == 0)
+                {
+                    var addUsuarioIdColumn = @"
+                        ALTER TABLE `RegistroComidas` 
+                        ADD COLUMN `UsuarioId` INT NOT NULL DEFAULT 1 AFTER `Id`,
+                        ADD INDEX `idx_usuario_id` (`UsuarioId`),
+                        ADD CONSTRAINT `fk_registro_usuario` 
+                            FOREIGN KEY (`UsuarioId`) 
+                            REFERENCES `Usuarios` (`Id`) 
+                            ON DELETE CASCADE 
+                            ON UPDATE CASCADE;";
+
+                    await connection.ExecuteNonQueryAsync(addUsuarioIdColumn);
+                    _logger.LogInformation("Columna 'UsuarioId' agregada a la tabla 'RegistroComidas'");
+                }
+
+                // Crear tabla RegistroComidas (si no existe)
                 var createRegistroComidasTable = @"
                     CREATE TABLE IF NOT EXISTS `RegistroComidas` (
                         `Id` INT NOT NULL AUTO_INCREMENT,
+                        `UsuarioId` INT NOT NULL,
                         `AlimentoId` INT NOT NULL,
                         `FechaHora` DATETIME NOT NULL,
                         `GramosConsumidos` DECIMAL(10, 2) NOT NULL,
@@ -78,7 +124,13 @@ public class DatabaseInitializer
                         `CargaGlucemicaCalculada` DECIMAL(10, 2) NULL,
                         PRIMARY KEY (`Id`),
                         INDEX `idx_fecha_hora` (`FechaHora`),
+                        INDEX `idx_usuario_id` (`UsuarioId`),
                         INDEX `idx_alimento_id` (`AlimentoId`),
+                        CONSTRAINT `fk_registro_usuario` 
+                            FOREIGN KEY (`UsuarioId`) 
+                            REFERENCES `Usuarios` (`Id`) 
+                            ON DELETE CASCADE 
+                            ON UPDATE CASCADE,
                         CONSTRAINT `fk_registro_alimento` 
                             FOREIGN KEY (`AlimentoId`) 
                             REFERENCES `Alimentos` (`Id`) 

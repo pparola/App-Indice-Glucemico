@@ -13,6 +13,7 @@ public class RegistrosComidaControllerTests
 {
     private readonly Mock<IRegistroRepository> _mockRegistroRepository;
     private readonly Mock<IAlimentoRepository> _mockAlimentoRepository;
+    private readonly Mock<IUsuarioRepository> _mockUsuarioRepository;
     private readonly Mock<ILogger<RegistrosComidaController>> _mockLogger;
     private readonly RegistrosComidaController _controller;
 
@@ -20,10 +21,12 @@ public class RegistrosComidaControllerTests
     {
         _mockRegistroRepository = new Mock<IRegistroRepository>();
         _mockAlimentoRepository = new Mock<IAlimentoRepository>();
+        _mockUsuarioRepository = new Mock<IUsuarioRepository>();
         _mockLogger = new Mock<ILogger<RegistrosComidaController>>();
         _controller = new RegistrosComidaController(
             _mockRegistroRepository.Object,
             _mockAlimentoRepository.Object,
+            _mockUsuarioRepository.Object,
             _mockLogger.Object);
     }
 
@@ -36,7 +39,8 @@ public class RegistrosComidaControllerTests
         {
             new RegistroComida 
             { 
-                Id = 1, 
+                Id = 1,
+                UsuarioId = 1,
                 AlimentoId = 1, 
                 FechaHora = DateTime.Today,
                 GramosConsumidos = 150.0m,
@@ -105,7 +109,8 @@ public class RegistrosComidaControllerTests
         {
             new RegistroComida 
             { 
-                Id = 1, 
+                Id = 1,
+                UsuarioId = 1,
                 AlimentoId = 1, 
                 FechaHora = fecha,
                 GramosConsumidos = 150.0m,
@@ -146,7 +151,8 @@ public class RegistrosComidaControllerTests
         {
             new RegistroComida 
             { 
-                Id = 1, 
+                Id = 1,
+                UsuarioId = 1,
                 AlimentoId = 1, 
                 FechaHora = fechaInicio.AddDays(2),
                 GramosConsumidos = 150.0m,
@@ -184,9 +190,11 @@ public class RegistrosComidaControllerTests
     public async Task Create_ReturnsCreatedResult_WithRegistro()
     {
         // Arrange
+        var usuario = new Usuario { Id = 1, Nombre = "Test User", Email = "test@test.com", Activo = true };
         var alimento = new Alimento { Id = 1, Nombre = "Manzana", IndiceGlucemico = 38, CarbsPor100g = 14.5m };
         var nuevoRegistro = new RegistroComida
         {
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = DateTime.Now,
             GramosConsumidos = 150.0m,
@@ -196,6 +204,7 @@ public class RegistrosComidaControllerTests
         var registroCreado = new RegistroComida
         {
             Id = 1,
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = nuevoRegistro.FechaHora,
             GramosConsumidos = 150.0m,
@@ -203,6 +212,7 @@ public class RegistrosComidaControllerTests
             CargaGlucemicaCalculada = 8.265m
         };
 
+        _mockUsuarioRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(usuario);
         _mockAlimentoRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(alimento);
         _mockRegistroRepository.Setup(r => r.AddAsync(It.IsAny<RegistroComida>())).ReturnsAsync(registroCreado);
 
@@ -220,9 +230,11 @@ public class RegistrosComidaControllerTests
     public async Task Create_CalculatesCargaGlucemica_WhenNotProvided()
     {
         // Arrange
+        var usuario = new Usuario { Id = 1, Nombre = "Test User", Email = "test@test.com", Activo = true };
         var alimento = new Alimento { Id = 1, Nombre = "Manzana", IndiceGlucemico = 38, CarbsPor100g = 14.5m };
         var nuevoRegistro = new RegistroComida
         {
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = DateTime.Now,
             GramosConsumidos = 150.0m,
@@ -233,6 +245,7 @@ public class RegistrosComidaControllerTests
         var registroCreado = new RegistroComida
         {
             Id = 1,
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = nuevoRegistro.FechaHora,
             GramosConsumidos = 150.0m,
@@ -240,6 +253,7 @@ public class RegistrosComidaControllerTests
             CargaGlucemicaCalculada = 8.265m
         };
 
+        _mockUsuarioRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(usuario);
         _mockAlimentoRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(alimento);
         _mockRegistroRepository.Setup(r => r.AddAsync(It.Is<RegistroComida>(reg => 
             reg.CargaGlucemicaCalculada.HasValue && 
@@ -258,9 +272,11 @@ public class RegistrosComidaControllerTests
     public async Task Create_SetsFechaHoraToNow_WhenNotProvided()
     {
         // Arrange
+        var usuario = new Usuario { Id = 1, Nombre = "Test User", Email = "test@test.com", Activo = true };
         var alimento = new Alimento { Id = 1, Nombre = "Manzana", IndiceGlucemico = 38, CarbsPor100g = 14.5m };
         var nuevoRegistro = new RegistroComida
         {
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = default,
             GramosConsumidos = 150.0m,
@@ -270,12 +286,14 @@ public class RegistrosComidaControllerTests
         var registroCreado = new RegistroComida
         {
             Id = 1,
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = DateTime.Now,
             GramosConsumidos = 150.0m,
             TipoComida = TipoComida.Desayuno
         };
 
+        _mockUsuarioRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(usuario);
         _mockAlimentoRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(alimento);
         _mockRegistroRepository.Setup(r => r.AddAsync(It.IsAny<RegistroComida>())).ReturnsAsync(registroCreado);
 
@@ -299,17 +317,42 @@ public class RegistrosComidaControllerTests
     }
 
     [Fact]
-    public async Task Create_ReturnsBadRequest_WhenAlimentoDoesNotExist()
+    public async Task Create_ReturnsBadRequest_WhenUsuarioDoesNotExist()
     {
         // Arrange
         var nuevoRegistro = new RegistroComida
         {
+            UsuarioId = 999,
+            AlimentoId = 1,
+            FechaHora = DateTime.Now,
+            GramosConsumidos = 150.0m,
+            TipoComida = TipoComida.Desayuno
+        };
+
+        _mockUsuarioRepository.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((Usuario?)null);
+
+        // Act
+        var result = await _controller.Create(nuevoRegistro);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Create_ReturnsBadRequest_WhenAlimentoDoesNotExist()
+    {
+        // Arrange
+        var usuario = new Usuario { Id = 1, Nombre = "Test User", Email = "test@test.com", Activo = true };
+        var nuevoRegistro = new RegistroComida
+        {
+            UsuarioId = 1,
             AlimentoId = 999,
             FechaHora = DateTime.Now,
             GramosConsumidos = 150.0m,
             TipoComida = TipoComida.Desayuno
         };
 
+        _mockUsuarioRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(usuario);
         _mockAlimentoRepository.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((Alimento?)null);
 
         // Act
@@ -323,15 +366,18 @@ public class RegistrosComidaControllerTests
     public async Task Create_ReturnsBadRequest_WhenGramosConsumidosIsZeroOrNegative()
     {
         // Arrange
+        var usuario = new Usuario { Id = 1, Nombre = "Test User", Email = "test@test.com", Activo = true };
         var alimento = new Alimento { Id = 1, Nombre = "Manzana", IndiceGlucemico = 38, CarbsPor100g = 14.5m };
         var nuevoRegistro = new RegistroComida
         {
+            UsuarioId = 1,
             AlimentoId = 1,
             FechaHora = DateTime.Now,
             GramosConsumidos = 0m,
             TipoComida = TipoComida.Desayuno
         };
 
+        _mockUsuarioRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(usuario);
         _mockAlimentoRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(alimento);
 
         // Act

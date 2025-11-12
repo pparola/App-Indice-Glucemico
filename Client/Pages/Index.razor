@@ -1,9 +1,253 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>App Índice Glucémico - Controla tu Carga Glucémica</PageTitle>
 
-<h1>Hello, world!</h1>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-chart-line me-2"></i>
+            Índice Glucémico
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#caracteristicas">Características</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#como-funciona">Cómo Funciona</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contacto">Contacto</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-Welcome to your new app.
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content fade-in-up">
+                <h1 class="hero-title">
+                    Controla tu Carga Glucémica
+                    <span class="d-block">de Forma Inteligente</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Registra tus comidas, calcula automáticamente la carga glucémica y mantén un control preciso de tu alimentación para una vida más saludable.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#caracteristicas" class="btn btn-hero btn-hero-primary">
+                        <i class="fas fa-rocket me-2"></i>
+                        Comenzar Ahora
+                    </a>
+                    <a href="#como-funciona" class="btn btn-hero btn-hero-outline">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Saber Más
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                <div class="hero-image">
+                    <i class="fas fa-mobile-alt" style="font-size: 15rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- Features Section -->
+<section id="caracteristicas" class="features-section">
+    <div class="container">
+        <h2 class="section-title">Características Principales</h2>
+        <p class="section-subtitle">
+            Herramientas poderosas para ayudarte a mantener un control preciso de tu carga glucémica diaria
+        </p>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Base de Datos Completa</h3>
+                    <p>
+                        Accede a una amplia base de datos de alimentos con información precisa sobre índice glucémico y contenido de carbohidratos.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Cálculo Automático</h3>
+                    <p>
+                        La aplicación calcula automáticamente la carga glucémica de cada comida basándose en fórmulas científicas precisas.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Seguimiento Diario</h3>
+                    <p>
+                        Monitorea tu carga glucémica total del día y mantén un registro histórico de tus comidas para análisis detallado.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Búsqueda Rápida</h3>
+                    <p>
+                        Encuentra alimentos rápidamente con nuestro sistema de búsqueda inteligente que sugiere resultados mientras escribes.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Diseño Responsive</h3>
+                    <p>
+                        Accede a tu información desde cualquier dispositivo. La aplicación se adapta perfectamente a móviles, tablets y escritorio.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card fade-in-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Datos Confiables</h3>
+                    <p>
+                        Información basada en fuentes científicas reconocidas como la Universidad de Sydney y USDA FoodData Central.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- How It Works Section -->
+<section id="como-funciona" class="how-it-works-section">
+    <div class="container">
+        <h2 class="section-title">Cómo Funciona</h2>
+        <p class="section-subtitle">
+            En solo tres simples pasos, comienza a controlar tu carga glucémica
+        </p>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-card fade-in-up">
+                    <div class="step-number">1</div>
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-search" style="font-size: 3rem; color: var(--primary-color);"></i>
+                    </div>
+                    <h4>Busca tu Alimento</h4>
+                    <p>
+                        Utiliza nuestra base de datos para encontrar el alimento que consumiste. La búsqueda es rápida e intuitiva.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card fade-in-up">
+                    <div class="step-number">2</div>
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-weight" style="font-size: 3rem; color: var(--primary-color);"></i>
+                    </div>
+                    <h4>Registra la Cantidad</h4>
+                    <p>
+                        Indica la cantidad en gramos que consumiste y selecciona el tipo de comida (Desayuno, Almuerzo, Cena o Snack).
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card fade-in-up">
+                    <div class="step-number">3</div>
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--primary-color);"></i>
+                    </div>
+                    <h4>Obtén el Resultado</h4>
+                    <p>
+                        La aplicación calcula automáticamente la carga glucémica y la agrega a tu registro diario.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title">¿Listo para Comenzar?</h2>
+        <p class="cta-subtitle">
+            Únete a nuestra comunidad y comienza a llevar un control preciso de tu carga glucémica hoy mismo.
+        </p>
+        <a href="#caracteristicas" class="btn btn-hero btn-hero-primary">
+            <i class="fas fa-arrow-right me-2"></i>
+            Empezar Ahora
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer id="contacto" class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5>
+                    <i class="fas fa-chart-line me-2"></i>
+                    Índice Glucémico
+                </h5>
+                <p>
+                    Aplicación diseñada para ayudarte a mantener un control preciso de tu carga glucémica diaria.
+                </p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Enlaces Rápidos</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#caracteristicas"><i class="fas fa-chevron-right me-2"></i>Características</a></li>
+                    <li><a href="#como-funciona"><i class="fas fa-chevron-right me-2"></i>Cómo Funciona</a></li>
+                    <li><a href="#contacto"><i class="fas fa-chevron-right me-2"></i>Contacto</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Información</h5>
+                <p>
+                    <i class="fas fa-info-circle me-2"></i>
+                    Datos basados en fuentes científicas confiables
+                </p>
+                <p>
+                    <i class="fas fa-database me-2"></i>
+                    Universidad de Sydney & USDA
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; @DateTime.Now.Year App Índice Glucémico. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+@inject IJSRuntime JSRuntime
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Smooth scroll para los enlaces del navbar
+            await JSRuntime.InvokeVoidAsync("smoothScroll");
+        }
+    }
+}

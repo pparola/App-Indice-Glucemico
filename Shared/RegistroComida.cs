@@ -11,6 +11,11 @@ public class RegistroComida
     public int Id { get; set; }
 
     /// <summary>
+    /// Identificador del usuario que registró la comida (Foreign Key a Usuario)
+    /// </summary>
+    public int UsuarioId { get; set; }
+
+    /// <summary>
     /// Identificador del alimento consumido (Foreign Key a Alimento)
     /// </summary>
     public int AlimentoId { get; set; }
@@ -34,6 +39,11 @@ public class RegistroComida
     /// Carga glucémica calculada (opcional - se puede almacenar o calcular al vuelo)
     /// </summary>
     public decimal? CargaGlucemicaCalculada { get; set; }
+
+    /// <summary>
+    /// Navegación al usuario relacionado
+    /// </summary>
+    public virtual Usuario? Usuario { get; set; }
 
     /// <summary>
     /// Navegación al alimento relacionado
