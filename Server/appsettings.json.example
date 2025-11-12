@@ -1,0 +1,20 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "SmtpSettings": {
+    "Server": "smtp.gmail.com",
+    "Port": "587",
+    "Titulo": "Tu Nombre o Empresa",
+    "UserName": "tu-email@gmail.com",
+    "Password": "tu-contraseña-de-aplicacion"
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "app_indice_glucemico": "server=localhost;port=3306;uid=tu_usuario;database=app_indice_glucemico;password=tu_contraseña;sslmode=none"
+  }
+}
+
